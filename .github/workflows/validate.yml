@@ -22,6 +22,6 @@ jobs:
           sudo mv kubeconform /usr/local/bin/
       - name: Build and validate overlays
         run: |
-          for env in dev prod; do
+          for env in dev staging prod; do
             kubectl kustomize apps/podinfo/overlays/$env | kubeconform -strict -summary
           done
