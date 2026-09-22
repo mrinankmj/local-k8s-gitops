@@ -6,3 +6,15 @@ server:
     type: ClusterIP
 dex:
   enabled: false
+
+# Notify on sync failures. The webhook URL itself is never stored here or in
+# git: it's read from the `ops-webhook-url` key of the `argocd-notifications-secret`
+# Secret (see `make notifications-secret` and the README).
+notifications:
+  enabled: true
+  notifiers:
+    service.webhook.ops-alerts: |
+      url: $ops-webhook-url
+      headers:
+        - name: Content-Type
+          value: application/json
