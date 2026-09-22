@@ -20,13 +20,22 @@ Terraform · kind · Helm · Argo CD (app-of-apps) · Kustomize · GitHub Action
 Prereqs: Docker, Terraform, kubectl.
 
 ```bash
-make up          # create cluster + install Argo CD
-make bootstrap   # register root app; Argo CD syncs dev, staging & prod
-make password    # admin password
-make ui          # open http://localhost:8080 (user: admin)
-make status      # list Argo CD Applications and their sync state
-make down        # destroy everything
+make up                    # create cluster + install Argo CD
+make bootstrap             # register root app; Argo CD syncs dev, staging & prod
+make password              # admin password
+make ui                    # open http://localhost:8080 (user: admin)
+make status                # list Argo CD Applications and their sync state
+make notifications-secret  # set the sync-failure webhook URL (see below)
+make down                  # destroy everything
 ```
+
+## Sync-failure notifications
+Every environment is subscribed to `on-sync-failed`, which posts to a generic webhook
+notifier when a sync fails. The webhook URL is never stored in git: run
+`make notifications-secret` and paste any webhook URL (Slack incoming webhook, a
+`requestbin`/`webhook.site` test URL, etc.) — it's written straight to a
+Kubernetes Secret (`argocd-notifications-secret`) that `terraform/argocd-values.yaml`
+references by key.
 
 ## Design choices
 - **App-of-apps**: adding an environment means adding one file under `argocd/apps/`.
